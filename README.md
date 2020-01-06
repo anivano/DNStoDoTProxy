@@ -12,21 +12,31 @@
 
 Run the below to build/run docker.  
 
+```
 docker build -t dot-proxy-server .
 docker run -it dot-proxy-server
+```
 
 Now to check that this is successful, open a new terminal and do the following:  
 docker exec -it {containerID} nslookup example.com
 
 So for me it looked like this:  
-anastasija@Babbage:~/Documents/Coding/proxy$ sudo docker exec -it b43f762424f6 nslookup chess.com  
 
+In one terminal I ran this:  
+```
+anastasija@Babbage:~/Documents/Coding/proxy$ sudo docker exec -it b43f762424f6 nslookup chess.com  
+```
+
+Andin the other terminal I got this result:  
+```
 anastasija@Babbage:~/Documents/Coding/proxy$ sudo docker run -it dns-server  
 SUCCESS
-
+```
 
 We can also use the dig command, also run in the second terminal:  
+```
 anastasija@Babbage:~/Documents/Coding/proxy$ dig @172.17.0.2 -p 53 google.com   
+```
 
 Which will get you:  
 
