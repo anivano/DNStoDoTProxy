@@ -88,10 +88,24 @@ The usual TLS concerns...
 
 2. How would you integrate that solution in a distributed, microservices-oriented and containerized architecture?  
 
+- 
+
 3. What other improvements do you think would be interesting to add to the project? 
 - The Cloudfare IP I used here shouldn't be hardcoded, perhaps in future, it would be useful to give the user the freedom to specify a different server. This could mean adding Google's DoT server as well as an option (for example)
 - Make it easier to use for users. This would include things such as better error messages, better output to terminal to explain what is happening.
 - The default subnet used by Docker; maybe that should be changeable by the user.  
 - In this project I don't pay attention to who is sending the requests. If this could be tracked, then we can block certain IP's from sending requests. Reasons for this may include: we only want specific IPs to send requests, or we want to prevent one IP from sending too many requests. Although I'm not completely sure what other reasons there could.  
 - I suspect re-establishing a connection with a client could be time-consuming. Not sure how but perhaps somehow check which client is sending the request and see if the TLS Handshake with this client has previously been completed and somehow use this fact to not have to 're-handshake'?
--  
+-  I used the default docker subnet, but there could be situations where we do not want this, and may want to create a different subnet if the default one is used for something else. 
+
+
+
+## Resources ##  
+
+* [Docker](https://docker.com)
+- [Docker Subnets](https://docs.docker.com/engine/reference/commandline/network_create/):  I used the default subnet of 172.17.0.2, so I did not need to worry about creating a new one, but this is what I refrenced when reading about docket subnets.
+* [Explanation of SSL, certs, and context](https://docs.python.org/3/library/ssl.html)
+* [Wrapping Sockets](https://docs.python.org/3/library/ssl.html#ssl.SSLContext.wrap_socket)
+* [Padding (About)](https://edns0-padding.org/implementations/)
+* This was useful for review mainly: [DNS Encryption Explained](https://blog.cloudflare.com/dns-encryption-explained/)
+

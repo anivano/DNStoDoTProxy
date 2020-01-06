@@ -19,13 +19,13 @@ def dnsPadding(data):
 
 
 """
-    This is given the tlsSocket connected over cloudfare,
-    and the dns_query we wish to send to cloudfare.
+    This is given the tlsSocket connected over cloudflare,
+    and the dns_query we wish to send to cloudflare.
 
     First we pad the dnsQuery, then we send it.
     Get reply, and return it.
 
-    This is where we send our 'new' query to the DNS-overTLS Cloudfare server. 
+    This is where we send our 'new' query to the DNS-overTLS Cloudflare server. 
 
 """
 def sendQuery(tlsSocket, dnsQuery):
@@ -45,18 +45,16 @@ def sendQuery(tlsSocket, dnsQuery):
 Here we want to create a TLS connection to the cloudflare server
 mentioned in the challenge description.
 
-This is why we use the IP addess: 1.1.1.1
-
 Our proxy needs to have a TLS connection because we want to be able to query a DoT Server
 
-Input: DNS Address
+Input: DNS Resolver Address 1.1.1.1
 Return: Wrapped Socket
 
-We are given a DNS address,
+We need to: 
 - Create a socket
 - get SSLContext,
-- wrap this SSLContext in 
-
+- wrap this SSLContext
+- Return this tlsSocket
 """
 def tlsConnectCloudFlare(DNS):
 
@@ -68,7 +66,6 @@ def tlsConnectCloudFlare(DNS):
     # but for this challenge I believe this should be good enough.
     sock.settimeout(10)
 
-    # found here: https://docs.python.org/3/library/ssl.html
     # This is for managing settings and certificats as described in the link above.
     context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
     context.verify_mode = ssl.CERT_REQUIRED
@@ -86,8 +83,8 @@ def tlsConnectCloudFlare(DNS):
 """
 
 Here we handle the requests. 
-1 - Create TLS connection to cloudfare DoT server
-2 - Check for UDP or TCP
+1 - Create TLS connection to cloudflare DoT server
+2 - Check if query is valid
 3 - Based on if we got a UDP or TCP request, take the appropriate acction. :)
 4 - print success on success
 
@@ -98,12 +95,12 @@ decide if it is TCP or UDP.
 """
 def handleRequest(data,address,DNS):
 
-    # Connect to Cloudfare Server
+    # Connect to Cloudflare Server
     tlsSocket = tlsConnectCloudFlare(DNS) 
     # Get Query Result
     result = sendQuery(tlsSocket, data)
 
-    # If qury is valid,
+    # If query is valid, handle it.
     if result:
        rcode = result[:6].encode("hex")
        rcode = str(rcode)[11:]
@@ -118,42 +115,30 @@ def handleRequest(data,address,DNS):
 
 
 """
-
 The goal of this is to just create a basic socket, and listen on port tcp/53
 for any DNS requests.
 """
-
 if __name__ == '__main__':
 
-    # I'm not sure, but I believe it would be better to create an option
-    # for these to not be hardcoded. Perhaps we want to change some of these
-    # for whatever reason?
-    # In future - maybe through sys ARGS[] we can set the below things.
-    DNS = "1.1.1.1"        # Target 
-    PORT = 53              # Listen Port, 53 as specified in the Doc.
-    HOST = "172.17.0.2"   # Host IP - We set this up with Docker.
+    DNS = "1.1.1.1"        # Target - Cloudflare  
+    PORT = 53              # DNS uses TCP Port 53
+    HOST = "172.17.0.2"    # This is us, the IP is Dockers default subnet
 
     # Create the socket and listen.
+    # If we have a problem in creating the socket, we get an exception.
     try:
-       # Create socket. 
-       # We use SOCK_DGRAM to allow TCP and UDP usage. 
-       # AF_INET is for Internet Address family IPv4
        ssock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
-
-       # bind socket to port so we can listen on it
        ssock.bind((HOST, PORT)) 
 
        while True:
          # Recieve (bytes, address) pair from socket
-         # I called the bytes = data
          data, address = ssock.recvfrom(1024) 
-         # Use the recieved data, address, and the above DNS to start a new thread
-         # Each thread calls the handleRequest() because each thread is a request
+
+         # Use the recieved data, address, and the above DNS ServerIP to start a new thread
+         # Each thread calls the handleRequest(), as each thread is a new request.
          thread.start_new_thread(handleRequest,(data, address, DNS))
 
-    # If we find an exception, print the error and then close the socket.
     except Exception, e:
-        print("HERE 1")
         print(e)
         ssock.close()
                   
