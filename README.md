@@ -1,4 +1,4 @@
-### DNS to DNS-over-TLS proxy ###  
+# DNS to DNS-over-TLS proxy #  
 
 Your task is to design and create a simple DNS to DNS-over-TLS proxy that we could use to enable our application to query a DNS-over-TLS server.  
 
@@ -23,30 +23,15 @@ docker build -t dot-proxy-server .
 docker run -it dot-proxy-server
 ```
 
-Now to check that this is successful, open a new terminal and do the following:  
-```
-docker exec -it {containerID} nslookup example.com
-```
-
+Now we want to check that all works as expected!
 So for me it looked like this:  
 
-In one terminal I ran this:  
-```
-anastasija@Babbage:~/Documents/Coding/proxy$ sudo docker exec -it b43f762424f6 nslookup chess.com  
-```
-
-And in the other terminal I got this result:  
-```
-anastasija@Babbage:~/Documents/Coding/proxy$ sudo docker run -it dns-server  
-SUCCESS
-```
-
-We can also use the dig command, also run in the second terminal:  
+Using the dig command, also run in the second terminal:  
 ```
 anastasija@Babbage:~/Documents/Coding/proxy$ dig @172.17.0.2 -p 53 google.com   
 ```
 
-Which will get you:  
+Which will get you the following in the terminal it's run in:  
 
 ```
 ; <<>> DiG 9.11.3-1ubuntu1.11-Ubuntu <<>> @172.17.0.2 -p 53 google.com
@@ -67,9 +52,10 @@ google.com.		153	IN	A	172.217.3.206
 ;; Query time: 59 msec
 ;; SERVER: 172.17.0.2#53(172.17.0.2)
 ;; WHEN: Mon Jan 06 11:44:44 PST 2020
-;; MSG SIZE  rcvd: 55
+;; MSG SIZE  rcvd: 55  
 ```
 
+And you will also see a SUCCESS message in the terminal where we ran the docker commands.  
 
 ## Improvements ##  
 1. Imagine this proxy being deployed in an infrastructure. What would be the security concerns you would raise?  
