@@ -1,5 +1,19 @@
 ### DNS to DNS-over-TLS proxy ###  
 
+Your task is to design and create a simple DNS to DNS-over-TLS proxy that we could use to enable our application to query a DNS-over-TLS server.  
+
+## Requirements ##  
+
+A working example of a DNS to DNS-over-TLS proxy that can: 
+1. Handle at least one DNS query, and give a result to the client.   
+2. Work over TCP and talk to a DNS-over-TLS server that works over TCP (e.g: Cloudflare).   
+
+Bonus:  
+* Allow multiple incoming requests at the same time  
+* Also handle UDP requests, while still querying tcp on the other side  
+* Any other improvements you can think of! 
+
+
 ## Steps ## 
 
 1. Get DNS Query.  
@@ -18,7 +32,9 @@ docker run -it dot-proxy-server
 ```
 
 Now to check that this is successful, open a new terminal and do the following:  
+```
 docker exec -it {containerID} nslookup example.com
+```
 
 So for me it looked like this:  
 
