@@ -1,23 +1,13 @@
 """
-
 N26 Challenge: 
-Our applications don't handle DNS-over-TLS by default. Your task is to design and create a
-simple DNS to DNS-over-TLS proxy that we could use to enable our application to query a
-DNS-over-TLS server.
-
-1 - We get a DNS query on port tcp/53
-2 - 
-3 - This query is now sent to the DNS-over-TLS server
+Our applications don't handle DNS-over-TLS by default. Your task is to design and create a simple DNS to DNS-over-TLS proxy that we could use to enable our application to query a DNS-over-TLS server.
 """
-
-#import binascii
 import socket
 import ssl
-#import sys
 import thread       
 
 """
-   This just gets the DNS query and adds length to it.
+   This just pads the DNS query.
 """
 def dnsPadding(data):
 
@@ -27,8 +17,8 @@ def dnsPadding(data):
     
     return paddedQuery
 
-"""
 
+"""
     This is given the tlsSocket connected over cloudfare,
     and the dns_query we wish to send to cloudfare.
 

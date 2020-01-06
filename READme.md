@@ -30,11 +30,12 @@ anastasija@Babbage:~/Documents/Coding/proxy$ dig @172.17.0.2 -p 53 google.com
 
 Which will get you:  
 
+```
 ; <<>> DiG 9.11.3-1ubuntu1.11-Ubuntu <<>> @172.17.0.2 -p 53 google.com
 ; (1 server found)
 ;; global options: +cmd
 ;; Got answer:
-;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 57296
+;; ->\>HEADER<<- opcode: QUERY, status: NOERROR, id: 57296
 ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
 
 ;; OPT PSEUDOSECTION:
@@ -49,13 +50,13 @@ google.com.		153	IN	A	172.217.3.206
 ;; SERVER: 172.17.0.2#53(172.17.0.2)
 ;; WHEN: Mon Jan 06 11:44:44 PST 2020
 ;; MSG SIZE  rcvd: 55
-
+```
 
 
 ## Improvements ##  
 1. Imagine this proxy being deployed in an infrastructure. What would be the security concerns you would raise?  
 
-The usual TLS
+The usual TLS concerns...
 
 
 
