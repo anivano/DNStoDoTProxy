@@ -14,14 +14,6 @@ Bonus:
 * Any other improvements you can think of! 
 
 
-## Steps ## 
-
-1. Get DNS Query.  
-2. Pad it.  
-3. Send it to the (Cloudfare) server  
-
-
-
 ## My Set-up ##  
 
 Run the below to build/run docker.  
@@ -43,7 +35,7 @@ In one terminal I ran this:
 anastasija@Babbage:~/Documents/Coding/proxy$ sudo docker exec -it b43f762424f6 nslookup chess.com  
 ```
 
-Andin the other terminal I got this result:  
+And in the other terminal I got this result:  
 ```
 anastasija@Babbage:~/Documents/Coding/proxy$ sudo docker run -it dns-server  
 SUCCESS
@@ -108,4 +100,4 @@ The usual TLS concerns...
 * [Wrapping Sockets](https://docs.python.org/3/library/ssl.html#ssl.SSLContext.wrap_socket)
 * [Padding (About)](https://edns0-padding.org/implementations/)
 * This was useful for review mainly: [DNS Encryption Explained](https://blog.cloudflare.com/dns-encryption-explained/)
-
+* [dig command](https://www.tecmint.com/10-linux-dig-domain-information-groper-commands-to-query-dns/)

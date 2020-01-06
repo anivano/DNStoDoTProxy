@@ -1,31 +1,40 @@
-"""
-N26 Challenge: 
-Our applications don't handle DNS-over-TLS by default. Your task is to design and create a simple DNS to DNS-over-TLS proxy that we could use to enable our application to query a DNS-over-TLS server.
-"""
 import socket
 import ssl
 import thread       
 
+
 """
    This just pads the DNS query.
-"""
-def dnsPadding(data):
 
-    # Adding length gives TCP format
-    addLength = "\x00"+chr(len(data))
-    paddedQuery = addLength + data
+   Parameters:
+   ----------
+   data : the query being sent
+
+   Returns:
+   --------
+   paddedQuery : Returns padded query
+"""
+def dnsPadding(query):
+
+    addLength = "\x00"+chr(len(query))
+    paddedQuery = addLength + query
     
     return paddedQuery
 
 
 """
-    This is given the tlsSocket connected over cloudflare,
-    and the dns_query we wish to send to cloudflare.
-
-    First we pad the dnsQuery, then we send it.
-    Get reply, and return it.
-
     This is where we send our 'new' query to the DNS-overTLS Cloudflare server. 
+
+    Parameters:
+    -----------
+    tlsSocket : The socket created in tlsConnect(), which allows for a TLS connection
+                to the target (in this case the CloudFlare server)
+    dnsQuery : This is the DNS query we want to send to CloudFlare.
+
+    Returns:
+    --------
+    reply : Returns the reply we wait for on the tlsSocket. 
+            As usual, we get a (bytes, address) pair.
 
 """
 def sendQuery(tlsSocket, dnsQuery):
@@ -42,19 +51,19 @@ def sendQuery(tlsSocket, dnsQuery):
     return reply
 
 """
-Here we want to create a TLS connection to the cloudflare server
-mentioned in the challenge description.
+    Here we want to create a TLS connection to the cloudflare server
+    mentioned in the challenge description.
 
-Our proxy needs to have a TLS connection because we want to be able to query a DoT Server
+    Our proxy needs to have a TLS connection because we want to be able 
+    to query a DoT Server
 
-Input: DNS Resolver Address 1.1.1.1
-Return: Wrapped Socket
+    Parameters:
+    -----------
+    DNS : This is the 1.1.1.1 address we are sending our query to.
 
-We need to: 
-- Create a socket
-- get SSLContext,
-- wrap this SSLContext
-- Return this tlsSocket
+    Return:
+    -------
+    wrappedSocket : An SSL Socket tied to the context.
 """
 def tlsConnectCloudFlare(DNS):
 
@@ -71,26 +80,28 @@ def tlsConnectCloudFlare(DNS):
     context.verify_mode = ssl.CERT_REQUIRED
     context.load_verify_locations('/etc/ssl/certs/ca-certificates.crt')
   
-    # We want to return a wrapped socket. We take our sock above, and wrap it below:
+    # We want to return a wrapped socket. We take our sock above, and wrap it:
     wrappedSocket = context.wrap_socket(sock, server_hostname=DNS)
     wrappedSocket.connect((DNS , 853))
-    
-    #print(wrappedSocket.getpeercert())
     
     return wrappedSocket
 
 
 """
+    Here we handle the requests we get/send.
+    This does not return anything, it just has to decide if the query is valid,
+    then send it off or do whatever next step is (call sendQuery, or sendto(), etc)
 
-Here we handle the requests. 
-1 - Create TLS connection to cloudflare DoT server
-2 - Check if query is valid
-3 - Based on if we got a UDP or TCP request, take the appropriate acction. :)
-4 - print success on success
+    This means we get a result from sendquery(), and
+    decide if it is TCP or UDP.
 
-This means we get a result from sendquery(), and
-decide if it is TCP or UDP.
-- TCP Handling is the base requirement, UDP is a plus, and it does not seem to work smoothly yet.
+    Print a success message on success
+
+    Parameters:
+    -----------
+    data :    The data being sent/recieved
+    address : Where we are sending
+    DNS :     CloudFlare's 1.1.1.1
 
 """
 def handleRequest(data,address,DNS):
@@ -100,7 +111,7 @@ def handleRequest(data,address,DNS):
     # Get Query Result
     result = sendQuery(tlsSocket, data)
 
-    # If query is valid, handle it.
+    # Check validity of query, handle appropriately.
     if result:
        rcode = result[:6].encode("hex")
        rcode = str(rcode)[11:]
@@ -115,8 +126,9 @@ def handleRequest(data,address,DNS):
 
 
 """
-The goal of this is to just create a basic socket, and listen on port tcp/53
-for any DNS requests.
+    The goal of this is to just create a basic socket, and listen on port tcp/53
+    for any DNS requests, which we then want to handle by sending to CloudFlare's
+    server.
 """
 if __name__ == '__main__':
 
