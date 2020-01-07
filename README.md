@@ -80,10 +80,9 @@ How would you integrate that solution in a distributed, microservices-oriented a
 What other improvements do you think would be interesting to add to the project? 
 - The Cloudfare IP I used here shouldn't be hardcoded, it could be useful to give the user the freedom to specify a different server. This could mean adding Google's DoT server as well as an option (for example)
 - Make it easier to use for users. This would include things such as better error messages, better output to terminal to explain what is happening.
-- 
 - I used the default docker subnet, but there could be situations where we do not want this, and may want to create a different subnet if the default one is used for something else. 
 - In this project I don't pay attention to who is sending the requests. If this could be tracked, then we can block certain IP's from sending requests. Reasons for this may include: we only want specific IPs to send requests, or we want to prevent one IP from sending too many requests.  
-- I suspect re-establishing a connection with a client could be time-consuming. Not sure how but perhaps somehow check which client is sending the request and see if the TLS Handshake with this client has previously been completed and somehow use this fact to not have to 're-handshake'?
+- To save time, we could somehow make it so that re-establishing a connection with a client does not re-quire a re-handshake. 
 - There could be stricter sender/reciever limitations for the requests.
 
 
