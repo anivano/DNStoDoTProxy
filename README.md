@@ -89,7 +89,7 @@ What other improvements do you think would be interesting to add to the project?
 ## Resources ##  
 
 * [Docker](https://docker.com)
-* [Docker Subnets](https://docs.docker.com/engine/reference/commandline/network_create/):  I used the default subnet of 172.17.0.2, so I did not need to worry about creating a new one, but this is what I refrenced when reading about docket subnets.
+* [Docker Subnets](https://docs.docker.com/engine/reference/commandline/network_create/):  I used the default subnet of 172.17.0.2, so I did not need to worry about creating a new one, but this is what I refrenced when reading about docker subnets.
 * [Explanation of SSL, certs, and context](https://docs.python.org/3/library/ssl.html)
 * [Wrapping Sockets](https://docs.python.org/3/library/ssl.html#ssl.SSLContext.wrap_socket)
 * [Padding (About)](https://edns0-padding.org/implementations/)
