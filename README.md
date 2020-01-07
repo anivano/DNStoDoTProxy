@@ -23,12 +23,11 @@ Bonus:
 Run the below to build/run docker.  
 
 ```
-docker build -t dot-proxy-server .
-docker run -it dot-proxy-server
+docker build -t dot-proxy .
+docker run -it dot-proxy
 ```
 
 Now we want to check that all works as expected!
-So for me it looked like this:  
 
 Using the dig command, run in a second terminal:  
 ```
