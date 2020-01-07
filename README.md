@@ -64,30 +64,27 @@ And you will also see a SUCCESS message in the terminal where we ran the docker 
 ## Improvements ##  
 
 ### Security Concerns ###
-1. Imagine this proxy being deployed in an infrastructure. What would be the security concerns you would raise?  
+Imagine this proxy being deployed in an infrastructure. What would be the security concerns you would raise?  
 
 - No 'packet checks' are performed to validate what we are forwarding to CloudFlare, or the reply we get from CloudFlare.  
 - We are using port 53 (as specified) which means root privilages are required.
 - We don't check that the remote server is trustworthy. In this case, I'm using CloudFlare, but if this were made to be able to reach other servers, we would want to perform some checks such as only allowing certain servers, or servers meeting certain requirements.
 
-
-
 ### Microservice Environment ###
-2. How would you integrate that solution in a distributed, microservices-oriented and containerized architecture?  
+How would you integrate that solution in a distributed, microservices-oriented and containerized architecture?  
 
 - DoT can provides a security layer to hide sensitive information.
 - This proxy could be deployed as a service, and then microservices within the environment send their DNS requests to the proxy service.
 
 ### Other Improvements ###
-3. What other improvements do you think would be interesting to add to the project? 
-- The Cloudfare IP I used here shouldn't be hardcoded, perhaps in future, it would be useful to give the user the freedom to specify a different server. This could mean adding Google's DoT server as well as an option (for example)
+What other improvements do you think would be interesting to add to the project? 
+- The Cloudfare IP I used here shouldn't be hardcoded, it could be useful to give the user the freedom to specify a different server. This could mean adding Google's DoT server as well as an option (for example)
 - Make it easier to use for users. This would include things such as better error messages, better output to terminal to explain what is happening.
-- The default subnet used by Docker; maybe that should be changeable by the user.  
-- In this project I don't pay attention to who is sending the requests. If this could be tracked, then we can block certain IP's from sending requests. Reasons for this may include: we only want specific IPs to send requests, or we want to prevent one IP from sending too many requests. Although I'm not completely sure what other reasons there could.  
+- 
+- I used the default docker subnet, but there could be situations where we do not want this, and may want to create a different subnet if the default one is used for something else. 
+- In this project I don't pay attention to who is sending the requests. If this could be tracked, then we can block certain IP's from sending requests. Reasons for this may include: we only want specific IPs to send requests, or we want to prevent one IP from sending too many requests.  
 - I suspect re-establishing a connection with a client could be time-consuming. Not sure how but perhaps somehow check which client is sending the request and see if the TLS Handshake with this client has previously been completed and somehow use this fact to not have to 're-handshake'?
--  I used the default docker subnet, but there could be situations where we do not want this, and may want to create a different subnet if the default one is used for something else. 
 - There could be stricter sender/reciever limitations for the requests.
-
 
 
 ## Resources ##  
