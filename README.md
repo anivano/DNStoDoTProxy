@@ -1,6 +1,11 @@
 # DNS to DNS-over-TLS proxy #  
 
-Your task is to design and create a simple DNS to DNS-over-TLS proxy that we could use to enable our application to query a DNS-over-TLS server.  
+The task is to design and create a simple DNS to DNS-over-TLS proxy that could be used to enable our application to query a DNS-over-TLS server.  
+
+Here is what this proxy does:   
+- gets plain text DNS requests from the host, 
+- redirects the query to a DNS server that supports TLS (in this case I used CloudFlare's 1.1.1.1),
+- sends replies from CloudFlare back to the client.
 
 ## Requirements ##  
 
@@ -10,9 +15,8 @@ A working example of a DNS to DNS-over-TLS proxy that can:
 
 Bonus:  
 * Allow multiple incoming requests at the same time  
-* Also handle UDP requests, while still querying tcp on the other side  
+* Also handle UDP requests, while still querying TCP on the other side  
 * Any other improvements you can think of! 
-
 
 ## My Set-up ##  
 
@@ -58,15 +62,18 @@ google.com.		153	IN	A	172.217.3.206
 And you will also see a SUCCESS message in the terminal where we ran the docker commands.  
 
 ## Improvements ##  
+
+### Security Concerns ###
 1. Imagine this proxy being deployed in an infrastructure. What would be the security concerns you would raise?  
 
-The usual TLS concerns...
+- No 'packet checks' are performed to validate what we are sending/recieving.  
+- We are using port 53 (as specified) which means root privilages are required.
 
 
-
+### Microservice Environment ###
 2. How would you integrate that solution in a distributed, microservices-oriented and containerized architecture?  
 
-- 
+- DoT can provides a security layer to hide sensitive information.
 
 3. What other improvements do you think would be interesting to add to the project? 
 - The Cloudfare IP I used here shouldn't be hardcoded, perhaps in future, it would be useful to give the user the freedom to specify a different server. This could mean adding Google's DoT server as well as an option (for example)
@@ -75,13 +82,14 @@ The usual TLS concerns...
 - In this project I don't pay attention to who is sending the requests. If this could be tracked, then we can block certain IP's from sending requests. Reasons for this may include: we only want specific IPs to send requests, or we want to prevent one IP from sending too many requests. Although I'm not completely sure what other reasons there could.  
 - I suspect re-establishing a connection with a client could be time-consuming. Not sure how but perhaps somehow check which client is sending the request and see if the TLS Handshake with this client has previously been completed and somehow use this fact to not have to 're-handshake'?
 -  I used the default docker subnet, but there could be situations where we do not want this, and may want to create a different subnet if the default one is used for something else. 
+- There could be stricter sender/reciever limitations for the requests.
 
 
 
 ## Resources ##  
 
 * [Docker](https://docker.com)
-- [Docker Subnets](https://docs.docker.com/engine/reference/commandline/network_create/):  I used the default subnet of 172.17.0.2, so I did not need to worry about creating a new one, but this is what I refrenced when reading about docket subnets.
+* [Docker Subnets](https://docs.docker.com/engine/reference/commandline/network_create/):  I used the default subnet of 172.17.0.2, so I did not need to worry about creating a new one, but this is what I refrenced when reading about docket subnets.
 * [Explanation of SSL, certs, and context](https://docs.python.org/3/library/ssl.html)
 * [Wrapping Sockets](https://docs.python.org/3/library/ssl.html#ssl.SSLContext.wrap_socket)
 * [Padding (About)](https://edns0-padding.org/implementations/)
